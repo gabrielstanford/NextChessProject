@@ -12,21 +12,19 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import {useNavigate} from'react-router-dom';
-import {useAuth0} from '@auth0/auth0-react'
+import {useRouter} from'next/router';
+import {useUser} from '@auth0/nextjs-auth0/client'
 
 const pages = ['About'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function Appbar() {
 
-  const navigate = useNavigate();
+  const router = useRouter();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const {loginWithRedirect} = useAuth0();
-  const {logout} = useAuth0();
 
-  const {user, isAuthenticated, isLoading} = useAuth0();
+  const {user, loginWithRedirect} = useUser();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -38,7 +36,7 @@ function Appbar() {
   const handleCloseNavMenu = (props) => {
     setAnchorElNav(null);
     if(props==="About") {
-      navigate("/altWelcome")
+      router.push("/altWelcome")
     }
 
   };
@@ -46,10 +44,10 @@ function Appbar() {
   const handleCloseUserMenu = (props) => {
     setAnchorElUser(null);
     if(props==='Logout') {
-      logout();
+      router.push("/api/auth/logout")
     }
     if(props==='Dashboard') {
-      navigate("/dashboard")
+      router.push("/dashboard")
     }
   };
 
@@ -142,7 +140,7 @@ function Appbar() {
               </Button>
             ))}
           </Box>
-            {isAuthenticated ? <Box sx={{flexGrow: 0}}>
+            {user ? <Box sx={{flexGrow: 0}}>
             <Tooltip title="Open settings">
     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
       <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
@@ -169,7 +167,7 @@ function Appbar() {
         </MenuItem>
       ))}
     </Menu>
-    </Box> : <Button variant="contained" onClick={() => loginWithRedirect()}>Log In</Button>}
+    </Box> : <Button variant="contained" onClick={() => router.push("/api/auth/login")}>Log In</Button>}
           
         </Toolbar>
       </Container>

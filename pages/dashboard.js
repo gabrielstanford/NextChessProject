@@ -2,7 +2,7 @@
 import { Typography, ThemeProvider, Modal, Box, Button } from "@mui/material";
 import theme from "../components/Theme";
 import * as React from 'react';
-// import {useAuth0} from '@auth0/auth0-react'
+import Appbar from '../components/Appbar'
 
 const style = {
   position: 'absolute',
@@ -39,7 +39,6 @@ const Dashboard = () => {
     // const {loginWithRedirect} = useAuth0();
     return(
       <div>
-
     <Typography variant="h3">
       We&apos;re all set to get you on your chess improvement journey. To save your results and keep the training personalized, please create an account.
     </Typography>
@@ -60,6 +59,7 @@ const Dashboard = () => {
 
   return (
     <div>
+    <Appbar />
   <Box sx={{bgcolor: '#cfe8fc', height: '100vh'}}>
     {account ? <CreateAccount /> : null}
       <Modal
