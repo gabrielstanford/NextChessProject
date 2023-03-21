@@ -16,7 +16,8 @@ const TestSet = dynamic(
 );
 
 let Choice = "";
-let level = [-1, -1, [-1, -1, -1, -1]]
+export let newPlayer = false;
+
 //level[0] is self-assesment
 //level[1] is tactical abilities
 //level[1][0] is checkmates
@@ -28,12 +29,11 @@ export function Test() {
   
   const [showQuestion1, setShowQuestion1] = useState(true);
   const [showTestSet, setShowTestSet] = useState(false);
-
-
   
   const Next = (s) => {
     if (s === "new") {
       Choice = "new";
+      newPlayer=true
       router.push("/dashboard")
     } else if (s === "not new") {
       Choice = "not new";
@@ -103,5 +103,4 @@ export function Test() {
   );
 }
 
-export {level}
 export default Test;

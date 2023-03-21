@@ -1,0 +1,73 @@
+import { useQuery, useMutation, QueryClient } from "react-query";
+import * as React from 'react'
+import {Typography, Button} from '@mui/material'
+
+//useQuery: fetching data from server
+//useMutation: changing data in server
+//queryCache: UI updates during server requests
+
+async function fetchSightingsRequest() {
+    const response = await fetch('/api/sightings');
+    const data = await response.json();
+    const {sightings} = data;
+    return sightings;
+  }
+  
+  async function createSightingRequest(sightingData) {
+    const settings = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({sighting: sightingData})
+   };
+   try {
+  
+    const response = await fetch("/api/sightings/create", settings);
+    const data = await response.json();
+    return data;
+   } catch(e) {
+      return e;
+   }
+  }
+
+  const queryClient = new QueryClient();
+
+  export default function testSighting() {
+
+  const mutation = useMutation(createSightingRequest, 
+    //     {
+    //     onMutate: async sightingData => {
+    //     //1) cancel queries
+    //     await queryClient.cancelQueries("sightings");
+    
+    //     //2 save snapshot
+    //     const previousSightings = queryClient.getQueryData("sightings");
+        
+    //     //3 optimistically update cache
+    //     queryClient.setQueryData("sightings", old => [...(old || []), sightingData]);
+    //     runFrame(!frame)
+    //     //4 return rollback function which reset cache back to snapshot
+    //     return {previousSightings};
+    //   },
+    //   onError: (err, sightingData, rollback) => rollback(),
+    //   onSettled: () => queryClient.invalidateQueries("sightings"),
+    // }
+    );
+
+    const {data: sightings} = useQuery("sightings", fetchSightingsRequest)
+
+    const onMapClick = React.useCallback(() => {
+        mutation.mutate({
+          latitude: 4,
+          longitude: 28
+        })
+      }, []);
+
+      return (
+        <div>
+            <Button onClick={onMapClick}>Create Sighting</Button>
+            {sightings ? <Typography color="white" variant="h6">{sightings.map(sighting => <div>{sighting.id} {sighting.createdAt} {sighting.latitude} {sighting.longitude}</div>)}</Typography> : null}
+        </div>
+      );
+  }

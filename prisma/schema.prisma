@@ -16,3 +16,14 @@ model Sighting {
   latitude Float
   longitude Float
 }
+
+model User {
+  id Int @id @default (autoincrement())
+  createdAt DateTime @default(now())
+  level1 Int
+  level2 Int
+  level3 Int
+  level4 Int
+  level5 Int
+  level6 Int
+}

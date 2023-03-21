@@ -6,8 +6,8 @@ import { Button, Typography, ThemeProvider } from "@mui/material";
 import { Chess, SQUARES } from "chess.js";
 import theme from "../components/Theme";
 import {useRouter} from 'next/router'
-import {level} from "../pages/test"
 import dynamic from 'next/dynamic'
+import {useMutation} from 'react-query'
 
 const Chessground = dynamic(
   () => import('@react-chess/chessground'),
@@ -40,8 +40,46 @@ let firstRun = 1;
 let incorrectPuzzle = false;
 let numCorrect = 0;
 let move = 1;
+let level = [1, -1, [-1, -1, -1, -1]]
+
+async function createUserRequest(userData) {
+  const settings = {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({user: userData})
+ };
+ try {
+  const response = await fetch("/api/users/create", settings);
+  const data = await response.json();
+  return data;
+ } catch(e) {
+    return e;
+ }
+}
 
 function TestSet() {
+
+  const mutation = useMutation(createUserRequest 
+    //     {
+    //     onMutate: async sightingData => {
+    //     //1) cancel queries
+    //     await queryClient.cancelQueries("sightings");
+    
+    //     //2 save snapshot
+    //     const previousSightings = queryClient.getQueryData("sightings");
+        
+    //     //3 optimistically update cache
+    //     queryClient.setQueryData("sightings", old => [...(old || []), sightingData]);
+    //     runFrame(!frame)
+    //     //4 return rollback function which reset cache back to snapshot
+    //     return {previousSightings};
+    //   },
+    //   onError: (err, sightingData, rollback) => rollback(),
+    //   onSettled: () => queryClient.invalidateQueries("sightings"),
+    // }
+    );
 
     const router = useRouter();
     const [frame, runFrame] = useState(false);
@@ -92,6 +130,7 @@ function TestSet() {
     );
 
     const onClickNoClueButton = () => {
+      //bug occuring: on two move puzzles, if you click i don't know after the first move nothing happens.
       level[1]=numCorrect
       if (puzzleStatus === 1) {
         level[2] = [0, 0, 0, 0]
@@ -107,7 +146,8 @@ function TestSet() {
       }
       else if(puzzleStatus===4) {
         level[2][3] = 0;
-        router.push("/dashboard")
+        onTestCompletion();
+        router.push("/dashboard");
       }
       incorrectPuzzle=true;
       onClickButton1();
@@ -168,6 +208,7 @@ function TestSet() {
             incorrectPuzzle=false;
           }
         level[1] = numCorrect;
+        onTestCompletion();
         router.push("/dashboard")
       }
       
@@ -251,6 +292,17 @@ function TestSet() {
       }
       runFrame(!frame);
     };
+
+    const onTestCompletion = React.useCallback(() => {
+      mutation.mutate({
+        level1: 1,
+        level2: level[1],
+        level3: level[2][0],
+        level4: level[2][1],
+        level5: level[2][2],
+        level6: level[2][3]
+      })
+    }, []);
 
     return (
       <div className="container4">
