@@ -154,7 +154,7 @@ function TestSet() {
 
     };
 
-    const onClickButton1 = useCallback(() => {
+    const onClickButton1 = () => {
 
       if (puzzleStatus !== 4) {
         move = 1;
@@ -215,15 +215,14 @@ function TestSet() {
 
       puzzleStatus++;
       setShowButton1(false);
-    }, [puzzleStatus, incorrectPuzzle]);
-
-    const onClickButton2 = useCallback(() => {
+    };
+    const onClickButton2 = () => {
       incorrectPuzzle = true;
       chess.undo();
       fenNoUpdate = chess.fen();
       setShowButton2(false);
       setShowNoClueButton(true);
-    }, [move]);
+    };
 
     const checkOneMovePuzzle = (theMove, theCorrectMove) => {
       if (theMove === theCorrectMove) {
@@ -302,7 +301,7 @@ function TestSet() {
         level5: level[2][2],
         level6: level[2][3]
       })
-    }, []);
+    }, [mutation]);
 
     return (
       <div className="container4">
