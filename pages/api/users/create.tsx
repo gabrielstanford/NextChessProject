@@ -7,14 +7,18 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     try {
         const {user: userData} = req.body;
+
         const user = await prisma.user.create({
             data: {
-                level1: userData.level1,
-                level2: userData.level2,
-                level3: userData.level3,
-                level4: userData.level4,
-                level5: userData.level5,
-                level6: userData.level6
+                isNew: userData.isNew,
+                numCorrect: userData.numCorrect,
+                firstProbCorrect: userData.firstProbCorrect,
+                secondProbCorrect: userData.secondProbCorrect,
+                thirdProbCorrect: userData.thirdProbCorrect,
+                fourthProbCorrect: userData.fourthProbCorrect,
+                fifthProbCorrect: userData.fifthProbCorrect,
+                sixthProbCorrect: userData.sixthProbCorrect,
+                seventhProbCorrect: userData.seventhProbCorrect
             }
         });
 

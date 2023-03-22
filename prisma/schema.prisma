@@ -20,10 +20,13 @@ model Sighting {
 model User {
   id Int @id @default (autoincrement())
   createdAt DateTime @default(now())
-  level1 Int
-  level2 Int
-  level3 Int
-  level4 Int
-  level5 Int
-  level6 Int
+  isNew Boolean @default(false)
+  numCorrect Int @default(0)
+  firstProbCorrect Boolean @default(false)
+  secondProbCorrect Boolean @default(false)
+  thirdProbCorrect Boolean @default(false)
+  fourthProbCorrect Boolean @default(false)
+  fifthProbCorrect Boolean @default(false)
+  sixthProbCorrect Boolean @default(false)
+  seventhProbCorrect Boolean @default(false)
 }
