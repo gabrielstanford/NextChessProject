@@ -8,47 +8,39 @@ import theme from "../components/Theme";
 import {useRouter} from 'next/router'
 import dynamic from 'next/dynamic'
 import {useMutation} from 'react-query'
-import Tactics from './Tactic'
 
 const Chessground = dynamic(
   () => import('@react-chess/chessground'),
   { ssr: false }
 );
 
-// console.log(Tactics)
-// const firstPuzzleFen = "8/5p2/5N2/5p2/1p3P2/3k3p/P2r2r1/3RR2K w - - 3 42";
-// const firstPuzzleOrig = "Rg1";
+const firstPuzzleFen = "8/5p2/5N2/5p2/1p3P2/3k3p/P2r2r1/3RR2K w - - 3 42";
+const firstPuzzleOrig = "Rg1";
 
-// //puzzle 2
-// const secondPuzzleFen =
-//   "r4rk1/1p3pp1/p2p1n1p/3P4/1P1Q1Bqn/P1N5/2B2PPP/2R1R1K1 w - - 0 1";
-// const secondPuzzleOrig = "g3";
-// //puzzle 3
-// const thirdPuzzleFen =
-//   "rn1qr1k1/ppp3pp/6b1/5p2/1bPP3P/4BP2/1P1NQ1P1/2KR1B1R w - - 0 1";
-// const thirdPuzzleOrig = "Qd3";
-// //puzzle 4
-// const fourthPuzzleFen = 
-//   "r1b1r1k1/pp2bppp/1qn2n2/3p4/2pP4/2P1BN1P/PPBQ1PP1/RN3RK1 b - - 0 1";
-//   const fourthPuzzleOrig = "Qxb2";
-
-//   const fifthPuzzleFen = "r1b1r1k1/p1p2p2/2pp1n1p/2b1q1p1/4P2B/2NB3P/PPP2PP1/R2QR1K1 w - g6 0 1";
-//   const fifthPuzzleOrig = "Bg3";
+//puzzle 2
+const secondPuzzleFen =
+  "r4rk1/1p3pp1/p2p1n1p/3P4/1P1Q1Bqn/P1N5/2B2PPP/2R1R1K1 w - - 0 1";
+const secondPuzzleOrig = "g3";
+//puzzle 3
+const thirdPuzzleFen =
+  "rn1qr1k1/ppp3pp/6b1/5p2/1bPP3P/4BP2/1P1NQ1P1/2KR1B1R w - - 0 1";
+const thirdPuzzleOrig = "Qd3";
+//puzzle 4
+const fourthPuzzleFen = 
+  "r1b1r1k1/pp2bppp/1qn2n2/3p4/2pP4/2P1BN1P/PPBQ1PP1/RN3RK1 b - - 0 1";
+  const fourthPuzzleOrig = "Qxb2";
 
 let puzzleStatus = 1;
 
-const chess = new Chess(Tactics[0].fen);
-let fenNoUpdate = Tactics[0].fen;
-let origMove = Tactics[0].blunderMove;
+const chess = new Chess(firstPuzzleFen);
+let fenNoUpdate = firstPuzzleFen;
+let origMove = firstPuzzleOrig;
 let orientationColor = "black";
 let firstRun = 1;
 let incorrectPuzzle = false;
 let numCorrect = 0;
 let move = 1;
-let level = [false, 0, []]
-for(let i=0; i<Tactics.length; i++) {
-  level[2][i]=false;
-}
+let level = [1, -1, [-1, -1, -1, -1]]
 
 async function createUserRequest(userData) {
   const settings = {
@@ -139,15 +131,21 @@ function TestSet() {
 
     const onClickNoClueButton = () => {
       //bug occuring: on two move puzzles, if you click i don't know after the first move nothing happens.
-      for(let i = 1; i<Tactics.length; i++) {
-        if(puzzleStatus===i) {
-          level[2][i-1]=false;
-        }
-        break;
+      level[1]=numCorrect
+      if (puzzleStatus === 1) {
+        level[2] = [0, 0, 0, 0]
       }
-      if(puzzleStatus===Tactics.length) {
-        level[2][Tactics.length-1]=false;
-        level[1]=numCorrect;
+      else if(puzzleStatus===2) {
+        level[2][1] = 0
+        level[2][2] = 0
+        level[2][3] = 0
+      }
+      else if(puzzleStatus===3) {
+        level[2][2] = 0
+        level[2][3] = 0
+      }
+      else if(puzzleStatus===4) {
+        level[2][3] = 0;
         onTestCompletion();
         router.push("/dashboard");
       }
@@ -156,44 +154,57 @@ function TestSet() {
 
     };
 
-
     const onClickButton1 = () => {
-      if (puzzleStatus !== Tactics.length) {
+
+      if (puzzleStatus !== 4) {
         move = 1;
-        for(let i = 1; i<Tactics.length; i++) {
-          console.log(i)
-          if(puzzleStatus===i) {
-            if(incorrectPuzzle===false) {
-              level[2][i-1]=true;
-              numCorrect++;
-            }
-            else {
-              incorrectPuzzle=false;
-              level[2][i-1]=false;
-            }
-            fenNoUpdate = Tactics[i].fen;
-            origMove=Tactics[i].blunderMove;
-            break;
+        if (puzzleStatus === 1) {
+          if (incorrectPuzzle === false) {
+            level[2][0] = 1;
+            numCorrect++;
+          } else {
+            incorrectPuzzle=false;
+            level[2][0] = 0;
           }
-        }
-        chess.load(fenNoUpdate);
-        if(chess.turn()==='b') {
-          orientationColor="white";
-        }
-        else {
+          fenNoUpdate = secondPuzzleFen;
+          origMove = secondPuzzleOrig;
+          orientationColor="black";
+        } else if (puzzleStatus === 2) {
+          if (incorrectPuzzle === false) {
+            numCorrect++;
+            level[2][1] = 1;
+          } else {
+            incorrectPuzzle=false;
+            level[2][1] = 0;
+          }
+          fenNoUpdate = thirdPuzzleFen;
+          origMove = thirdPuzzleOrig;
           orientationColor="black";
         }
+        else if (puzzleStatus === 3) {
+          if (incorrectPuzzle === false) {
+            numCorrect++;
+            level[2][2] = 1;
+          } else {
+            level[2][2] = 0;
+            incorrectPuzzle=false;
+          }
+          fenNoUpdate=fourthPuzzleFen;
+          origMove = fourthPuzzleOrig;
+          orientationColor="white";
+        }
+        chess.load(fenNoUpdate);
         //setTimeout
         firstPuzzleMove(origMove);
         setShowNoClueButton(true);
       
       }
-      else if(puzzleStatus===Tactics.length) {
+      else if(puzzleStatus===4) {
           if (incorrectPuzzle === false) {
             numCorrect++;
-            level[2][Tactics.length-1] = true;
+            level[2][3] = 1;
           } else {
-            level[2][Tactics.length-1] = false;
+            level[2][3] = 0;
             incorrectPuzzle=false;
           }
         level[1] = numCorrect;
@@ -251,6 +262,7 @@ function TestSet() {
     };
 
     const squaros = SQUARES;
+    const turnColor = chess.turn() === "w" ? "black" : "white";
     const toDests = (chess) => {
       const dests = new Map();
       squaros.forEach((s) => {
@@ -267,31 +279,27 @@ function TestSet() {
     const handleMove = (from, to) => {
       let newMove = chess.move({ from, to });
       fenNoUpdate = chess.fen();
-      for(let i = 1; i<=Tactics.length; i++) {
-      if (puzzleStatus === i) {
-        if(Tactics[i-1].solution.length===1) {
-          checkOneMovePuzzle(newMove.san, Tactics[i-1].solution[0])
-        }
-        else if(Tactics[i-1].solution.length===3) {
-          checkTwoMovePuzzle(newMove.san, Tactics[i-1].solution[0], Tactics[i-1].solution[1], Tactics[i-1].solution[2])
-        }
-        break;
+      if (puzzleStatus === 1) {
+        checkOneMovePuzzle(newMove.san, "Rh2#");
+      } else if (puzzleStatus === 2) {
+        checkTwoMovePuzzle(newMove.san, "Nf3+", "Kg2", "Nxd4");
+      } else if (puzzleStatus === 3) {
+        checkOneMovePuzzle(newMove.san, "f4");
       }
-    }
+      else if(puzzleStatus===4) {
+        checkTwoMovePuzzle(newMove.san, "Bxh7+", "Kxh7", "Qxb2");
+      }
       runFrame(!frame);
     };
 
     const onTestCompletion = React.useCallback(() => {
       mutation.mutate({
-        isNew: level[0],
-        numCorrect: level[1],
-        firstProbCorrect: level[2][0],
-        secondProbCorrect: level[2][1],
-        thirdProbCorrect: level[2][2],
-        fourthProbCorrect: level[2][3],
-        fifthProbCorrect: level[2][4],
-        sixthProbCorrect: level[2][5],
-        seventhProbCorrect: level[2][6]
+        level1: 1,
+        level2: level[1],
+        level3: level[2][0],
+        level4: level[2][1],
+        level5: level[2][2],
+        level6: level[2][3]
       })
     }, [mutation]);
 
