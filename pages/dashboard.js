@@ -1,10 +1,14 @@
 import { Typography, ThemeProvider, Modal, Box, Button } from "@mui/material";
+import {DoneOutline, Close} from '@mui/icons-material'
 import theme from "../components/Theme";
 import * as React from 'react';
 import {useState} from 'react';
 import Appbar from '../components/Appbar'
 import { useQuery } from "react-query";
 import {newPlayer} from "./test"
+import {useRouter} from 'next/router'
+
+
 
 const style = {
   position: 'absolute',
@@ -34,6 +38,8 @@ let openTested = false;
 
 const Dashboard = () => {
 
+  const router = useRouter();
+
   const [account, setAccount] = useState(false);
   // const [openNew, setOpenNew] = useState(false);
   // const [openTested, setOpenTested] = useState(false);
@@ -57,7 +63,7 @@ const Dashboard = () => {
       We&apos;re all set to get you on your chess improvement journey. To save your results and keep the training personalized, please create an account.
     </Typography>
     {/* <Button variant="contained" onClick={() => loginWithRedirect()}>Create Account</Button> */}
-    <Button variant="contained">Create Account</Button>
+    <Button variant="contained" onClick={() => {router.push("/api/auth/login")}}>Create Account</Button>
     </div>
     )
   }
@@ -112,11 +118,15 @@ const Dashboard = () => {
           {users && users[users.length-1] ? <>
           {/* <Typography color="black" variant="h6">{users[users.length-1].level1 } {users[users.length-1].level2} {users[users.length-1].level3} {users[users.length-1].level4} {users[users.length-1].level5} {users[users.length-1].level6}</Typography> */}
 
-         <Typography color="black" variant="h6">You got {users[users.length-1].level2} puzzles correct.</Typography> 
-         {users[users.length-1].level3===0 ? <Typography color="black" variant="h6">1st Problem Incorrect</Typography> : <Typography color="black" variant="h6">1st Problem Correct</Typography>}
-         {users[users.length-1].level4===0 ? <Typography color="black" variant="h6">2nd Problem Incorrect</Typography> : <Typography color="black" variant="h6">2nd Problem Correct</Typography>}
-         {users[users.length-1].level5===0 ? <Typography color="black" variant="h6">3rd Problem Incorrect</Typography> : <Typography color="black" variant="h6">3rd Problem Correct</Typography>}
-         {users[users.length-1].level6===0 ? <Typography color="black" variant="h6">4th Problem Incorrect</Typography> : <Typography color="black" variant="h6">4th Problem Correct</Typography>}
+         <Typography color="black" variant="h6">You got {users[users.length-1].numCorrect} puzzles correct.</Typography> 
+         {users[users.length-1].firstProbCorrect ? <Typography color="black" variant="h6">#1: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#1: <Close /></Typography>}
+         {users[users.length-1].secondProbCorrect ? <Typography color="black" variant="h6">#2: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#2: <Close /></Typography>}
+         {users[users.length-1].thirdProbCorrect ? <Typography color="black" variant="h6">#3: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#3: <Close /></Typography>}
+         {users[users.length-1].fourthProbCorrect ? <Typography color="black" variant="h6">#4: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#4: <Close /></Typography>}
+         {users[users.length-1].fifthProbCorrect ? <Typography color="black" variant="h6">#5: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#5: <Close /></Typography>}
+         {users[users.length-1].sixthProbCorrect ? <Typography color="black" variant="h6">#6: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#6: <Close /></Typography>}
+         {users[users.length-1].seventhProbCorrect ? <Typography color="black" variant="h6">#7: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#7: <Close /></Typography>}
+
 
 
 
