@@ -48,6 +48,14 @@ const TACTICS: Tactic[] = [
     fen: "2kr3r/p1p1bpp1/2p2n1p/8/8/1P6/P1P1RPPP/RNB3K1 w - - 1 16",
     solution: ["Rd1+", "Re1", "Rxe1#"]
   },
+  /*
+  {
+    id: "8"
+    blunderMove: Qe6
+    fen: "6k1/3q2p1/6P1/8/2p5/8/4BPPP/4R1K1 b - - 0 1"
+    solution: ["Bxc4", "Qxc4", "Re8#""]
+  }
+  */
 
 ];
 

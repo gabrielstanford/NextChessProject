@@ -149,7 +149,10 @@ function TestSet() {
         level[2][Tactics.length-1]=false;
         level[1]=numCorrect;
         onTestCompletion();
-        router.push("/dashboard");
+         router.push({      
+          pathname: '/dashboard',
+          query: { newPlayer: 'false' },
+        });
       }
       incorrectPuzzle=true;
       onClickButton1();
@@ -198,7 +201,10 @@ function TestSet() {
           }
         level[1] = numCorrect;
         onTestCompletion();
-        router.push("/dashboard")
+        router.push({      
+          pathname: '/dashboard',
+          query: { newPlayer: 'false' },
+        });
       }
       
 

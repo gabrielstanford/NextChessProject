@@ -5,7 +5,7 @@ import "chessground/assets/chessground.cburnett.css";
 import { Button, IconButton, Typography, ThemeProvider, Stack, Container } from "@mui/material";
 import Chessground from "@react-chess/chessground";
 import { Chess, SQUARES } from "chess.js";
-import { DoneOutline, Close } from "@mui/icons-material";
+import { DoneOutline, Close, LocalHospitalTwoTone } from "@mui/icons-material";
 import {useRouter} from 'next/router'
 import theme from "../components/Theme";
 import dynamic from 'next/dynamic'
@@ -15,8 +15,12 @@ const TestSet = dynamic(
   { ssr: false }
 );
 
-let Choice = "";
-export let newPlayer = false;
+
+//const newPlayer = localStorage.getItem('newPlayer');
+//// Assuming the current URL is '/firstPage'
+// const newPlayer = true;
+// const nextPageUrl = `/secondPage?newPlayer=${newPlayer}`;
+// router.push(nextPageUrl);
 
 //level[0] is self-assesment
 //level[1] is tactical abilities
@@ -32,11 +36,14 @@ export function Test() {
   
   const Next = (s) => {
     if (s === "new") {
-      Choice = "new";
-      newPlayer=true
-      router.push("/dashboard")
+      localStorage.setItem('newPlayer', true)
+      // localStorage.setItem('newPlayer', true)
+      router.push({      
+      pathname: '/dashboard',
+      query: { newPlayer: 'true' },})
     } else if (s === "not new") {
-      Choice = "not new";
+      localStorage.setItem('newPlayer', false)
+      // localStorage.setItem('newPlayer', false)
       setShowQuestion1(false);
       setShowTestSet(true);
     } else {

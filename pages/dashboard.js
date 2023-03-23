@@ -5,10 +5,11 @@ import * as React from 'react';
 import {useState} from 'react';
 import Appbar from '../components/Appbar'
 import { useQuery } from "react-query";
-import {newPlayer} from "./test"
-import {useRouter} from 'next/router'
+import {useRouter} from 'next/router';
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { RouteMatcher } from "next/dist/server/future/route-matchers/route-matcher";
 
-
+//next step: use localstorage to save test results before user creates account so that data is not lost on accidental reload
 
 const style = {
   position: 'absolute',
@@ -23,35 +24,75 @@ const style = {
 };
 
 //database
-let firstRun = true;
+
+// if (typeof window !== 'undefined') {
+// const newPlayerString = localStorage.getItem('newPlayer');
+// }
 
 async function fetchSightingsRequest() {
   const response = await fetch('/api/users');
   const data = await response.json();
-  console.log(data);
   const {users} = data;
   return users;
 }
 
-let openNew = false;
-let openTested = false;
+let firstRun = false;
+let guestNewDash = false;
+let guestTestedDash = false;
+let newPlayer= 'unsettled';
+let youCanRun = true;
 
 const Dashboard = () => {
-
+  console.log('here')
+  console.log(firstRun)
   const router = useRouter();
-
   const [account, setAccount] = useState(false);
-  // const [openNew, setOpenNew] = useState(false);
-  // const [openTested, setOpenTested] = useState(false);
+  const {user, isLoading} = new useUser();
 
-  const handleCloseNew = () => {
-    openNew = false;
-    setAccount(true);
-  };
+  if(router.query && youCanRun) {
+    if(router.query.newPlayer === 'true') {
+    newPlayer = 'true';
+    }
+    else if(router.query.newPlayer === 'false') {
+    newPlayer = 'false';
+    }
+    else {
+      console.log('otherwise')
+    }
+    firstRun = true;
+    } 
+  else {
+  console.log('otherwise')
+  }
+
   const handleCloseTested = () => {
-    openTested = false;
+    guestTestedDash=false;
     setAccount(true);
   }
+
+  const handleCloseNew = () => {
+    guestNewDash = false;
+    setAccount(true);
+  }
+
+  if(!isLoading && !user && firstRun) {
+
+    if(newPlayer==='true') {
+      firstRun=false;
+      youCanRun=false;
+      guestNewDash = true;
+    }
+    else if(newPlayer==='false') {
+      firstRun=false;
+      youCanRun=false;
+      guestTestedDash=true;
+    }
+    else {
+      console.log(newPlayer)
+    }
+    
+    
+    }
 
   const {data: users} = useQuery("users", fetchSightingsRequest)
 
@@ -68,101 +109,83 @@ const Dashboard = () => {
     )
   }
 
-  if(newPlayer && firstRun) {
-    openNew = true;
-    
+  const Loading = () => {
+    <Typography color="black" variant="h2">Loading...</Typography>
   }
-  else if(!newPlayer && firstRun) {
-    openTested = true;
-  }
-  firstRun=false;
 
-  if(users)
-  console.log(users[users.length-1])
+  const DashboardForUser = () => {
+
+  }
+
+  function DashNewGuest() {
+    console.log('in this func')
+      return(
+        <>
+        <ThemeProvider theme={theme}>
+          <Modal
+            open={true}
+            onClose={handleCloseNew}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Welcome, new player!
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                Click out of this to open your dashboard and start learning!
+              </Typography>
+            </Box>
+          </Modal>
+          </ThemeProvider>
+          </>
+      )
+      }
+
+      function DashTestedGuest() {
+        console.log('in this fun')
+        return(
+            <>
+            <ThemeProvider theme={theme}>
+            <Modal
+            open={true}
+            onClose={handleCloseTested}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            >
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Thanks for completing the test! Here are your results: 
+              </Typography>
+              {users && users[users.length-1] ? <>
+              {/* <Typography color="black" variant="h6">{users[users.length-1].level1 } {users[users.length-1].level2} {users[users.length-1].level3} {users[users.length-1].level4} {users[users.length-1].level5} {users[users.length-1].level6}</Typography> */}
+
+            <Typography color="black" variant="h6">You got {users[users.length-1].numCorrect} puzzles correct.</Typography> 
+            {users[users.length-1].firstProbCorrect ? <Typography color="black" variant="h6">#1: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#1: <Close /></Typography>}
+            {users[users.length-1].secondProbCorrect ? <Typography color="black" variant="h6">#2: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#2: <Close /></Typography>}
+            {users[users.length-1].thirdProbCorrect ? <Typography color="black" variant="h6">#3: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#3: <Close /></Typography>}
+            {users[users.length-1].fourthProbCorrect ? <Typography color="black" variant="h6">#4: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#4: <Close /></Typography>}
+            {users[users.length-1].fifthProbCorrect ? <Typography color="black" variant="h6">#5: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#5: <Close /></Typography>}
+            {users[users.length-1].sixthProbCorrect ? <Typography color="black" variant="h6">#6: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#6: <Close /></Typography>}
+            {users[users.length-1].seventhProbCorrect ? <Typography color="black" variant="h6">#7: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#7: <Close /></Typography>}
+              </> : null }
+              </Box>
+            </Modal>
+            </ThemeProvider>
+            </>
+        );
+      }
+
   return (
     <div>
     <Appbar />
   <Box sx={{bgcolor: '#cfe8fc', height: '100vh'}}>
-    {account ? <CreateAccount /> : null}
 
-    {/* {users && users[0] ? <Typography color="black" variant="h6">{users[0].level1} {users[0].level2} {users[0].level3} {users[0].level4} {users[0].level5} {users[0].level6}</Typography> : null}
-    {users && users[1] ? <Typography color="black" variant="h6">{users[1].level1} {users[1].level2} {users[1].level3} {users[1].level4} {users[1].level5} {users[1].level6}</Typography> : null } */}
+    {isLoading ? <Loading /> : null}
+    {account && !guestNewDash && !guestTestedDash ? <CreateAccount /> : null}
+    {guestNewDash ? <DashNewGuest /> : null}
+    {guestTestedDash ? <DashTestedGuest /> : null}
 
-      <Modal
-        open={openNew}
-        onClose={handleCloseNew}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Welcome, new player!
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Click out of this to open your dashboard and start learning!
-          </Typography>
-          {/* {users ? <Typography color="black" variant="h6">{sightings.map(sighting => <div>{sighting.id} {sighting.createdAt} {sighting.latitude} {sighting.longitude}</div>)}</Typography> : null} */}
-        </Box>
-      </Modal>
-
-      <Modal
-        open={openTested}
-        onClose={handleCloseTested}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Thanks for completing the test! Here are your results: 
-          </Typography>
-          {users && users[users.length-1] ? <>
-          {/* <Typography color="black" variant="h6">{users[users.length-1].level1 } {users[users.length-1].level2} {users[users.length-1].level3} {users[users.length-1].level4} {users[users.length-1].level5} {users[users.length-1].level6}</Typography> */}
-
-         <Typography color="black" variant="h6">You got {users[users.length-1].numCorrect} puzzles correct.</Typography> 
-         {users[users.length-1].firstProbCorrect ? <Typography color="black" variant="h6">#1: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#1: <Close /></Typography>}
-         {users[users.length-1].secondProbCorrect ? <Typography color="black" variant="h6">#2: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#2: <Close /></Typography>}
-         {users[users.length-1].thirdProbCorrect ? <Typography color="black" variant="h6">#3: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#3: <Close /></Typography>}
-         {users[users.length-1].fourthProbCorrect ? <Typography color="black" variant="h6">#4: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#4: <Close /></Typography>}
-         {users[users.length-1].fifthProbCorrect ? <Typography color="black" variant="h6">#5: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#5: <Close /></Typography>}
-         {users[users.length-1].sixthProbCorrect ? <Typography color="black" variant="h6">#6: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#6: <Close /></Typography>}
-         {users[users.length-1].seventhProbCorrect ? <Typography color="black" variant="h6">#7: <DoneOutline></DoneOutline></Typography> : <Typography color="black" variant="h6">#7: <Close /></Typography>}
-
-
-
-
-          </> : null }
-
-        <ThemeProvider theme={theme}>
-        {/* {sightings ? <Typography color="black" variant="h6">{sightings.map(sighting => <div>{sighting.id} {sighting.createdAt} {sighting.latitude} {sighting.longitude}</div>)}</Typography> : null} */}
-        {/* {level[0] === 0 ? (
-          <Typography>You are new to chess.</Typography>
-        ) : (
-          <Typography>You know the rules of chess.</Typography>
-        )}
-        <Typography>You got {level[1]} puzzles correct in the test.</Typography>
-        {level[2][0] === 0 ? (
-          <Typography>Mate in one level: 0/10</Typography>
-        ) : (
-          <Typography>Mate in one level: 10/10</Typography>
-        )}
-        {level[2][1] === 0 ? (
-          <Typography>Fork/Double Attack Level: 0/10</Typography>
-        ) : (
-          <Typography>Fork/Double Attack Level: 10/10</Typography>
-        )}
-        {level[2][2] === 0 ? (
-          <Typography>Discovered attack level: 0/10</Typography>
-        ) : (
-          <Typography>Discovered attack level: 10/10</Typography>
-        )}
-        {level[2][3] === 0 ? (
-          <Typography>Discovered check level: 0/10</Typography>
-        ) : (
-          <Typography>Discovered check level: 10/10</Typography>
-        )} */}
-      </ThemeProvider> 
-        </Box>
-      </Modal>
     </Box>
     </div>
   );
