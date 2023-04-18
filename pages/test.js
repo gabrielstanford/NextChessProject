@@ -36,14 +36,15 @@ export function Test() {
   
   const Next = (s) => {
     if (s === "new") {
-      localStorage.setItem('newPlayer', true)
+      // localStorage.setItem('newPlayer', true)
       // localStorage.setItem('newPlayer', true)
       router.push({      
       pathname: '/dashboard',
       query: { newPlayer: 'true' },})
     } else if (s === "not new") {
-      localStorage.setItem('newPlayer', false)
       // localStorage.setItem('newPlayer', false)
+      // localStorage.setItem('newPlayer', false)
+      localStorage.clear();
       setShowQuestion1(false);
       setShowTestSet(true);
     } else {

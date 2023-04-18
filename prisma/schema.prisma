@@ -10,23 +10,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Sighting {
-  id Int @id @default (autoincrement())
-  createdAt DateTime @default(now())
-  latitude Float
-  longitude Float
-}
-
 model User {
   id Int @id @default (autoincrement())
   createdAt DateTime @default(now())
-  isNew Boolean @default(false)
-  numCorrect Int @default(0)
-  firstProbCorrect Boolean @default(false)
-  secondProbCorrect Boolean @default(false)
-  thirdProbCorrect Boolean @default(false)
-  fourthProbCorrect Boolean @default(false)
-  fifthProbCorrect Boolean @default(false)
-  sixthProbCorrect Boolean @default(false)
-  seventhProbCorrect Boolean @default(false)
+  email String @unique
+  level Level?
+}
+
+model Level {
+  id Int @id @default (autoincrement())
+  user User @relation(fields: [userEmail], references: [email])
+  userEmail String @unique
+  isNew Boolean
+  numCorrect Int?
+  firstProbCorrect Boolean?
+  secondProbCorrect Boolean? 
+  thirdProbCorrect Boolean?
+  fourthProbCorrect Boolean?
+  fifthProbCorrect Boolean? 
+  sixthProbCorrect Boolean? 
+  seventhProbCorrect Boolean? 
+
 }

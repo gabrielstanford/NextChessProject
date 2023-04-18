@@ -4,36 +4,17 @@ import "chessground/assets/chessground.brown.css";
 import "chessground/assets/chessground.cburnett.css";
 import { Button, Typography, ThemeProvider } from "@mui/material";
 import { Chess, SQUARES } from "chess.js";
-import theme from "../components/Theme";
+import theme from "./Theme";
 import {useRouter} from 'next/router'
 import dynamic from 'next/dynamic'
 import {useMutation} from 'react-query'
 import Tactics from './Tactic'
+import {useUser} from '@auth0/nextjs-auth0/client'
 
 const Chessground = dynamic(
   () => import('@react-chess/chessground'),
   { ssr: false }
 );
-
-// console.log(Tactics)
-// const firstPuzzleFen = "8/5p2/5N2/5p2/1p3P2/3k3p/P2r2r1/3RR2K w - - 3 42";
-// const firstPuzzleOrig = "Rg1";
-
-// //puzzle 2
-// const secondPuzzleFen =
-//   "r4rk1/1p3pp1/p2p1n1p/3P4/1P1Q1Bqn/P1N5/2B2PPP/2R1R1K1 w - - 0 1";
-// const secondPuzzleOrig = "g3";
-// //puzzle 3
-// const thirdPuzzleFen =
-//   "rn1qr1k1/ppp3pp/6b1/5p2/1bPP3P/4BP2/1P1NQ1P1/2KR1B1R w - - 0 1";
-// const thirdPuzzleOrig = "Qd3";
-// //puzzle 4
-// const fourthPuzzleFen = 
-//   "r1b1r1k1/pp2bppp/1qn2n2/3p4/2pP4/2P1BN1P/PPBQ1PP1/RN3RK1 b - - 0 1";
-//   const fourthPuzzleOrig = "Qxb2";
-
-//   const fifthPuzzleFen = "r1b1r1k1/p1p2p2/2pp1n1p/2b1q1p1/4P2B/2NB3P/PPP2PP1/R2QR1K1 w - g6 0 1";
-//   const fifthPuzzleOrig = "Bg3";
 
 let puzzleStatus = 1;
 
@@ -50,13 +31,13 @@ for(let i=0; i<Tactics.length; i++) {
   level[2][i]=false;
 }
 
-async function createUserRequest(userData) {
+async function createLevelRequest(levelData) {
   const settings = {
   method: "POST",
   headers: {
     "Content-Type": "application/json"
   },
-  body: JSON.stringify({user: userData})
+  body: JSON.stringify({level: levelData})
  };
  try {
   const response = await fetch("/api/users/create", settings);
@@ -69,7 +50,7 @@ async function createUserRequest(userData) {
 
 function TestSet() {
 
-  const mutation = useMutation(createUserRequest 
+  const mutation = useMutation(createLevelRequest 
     //     {
     //     onMutate: async sightingData => {
     //     //1) cancel queries
@@ -88,6 +69,7 @@ function TestSet() {
     //   onSettled: () => queryClient.invalidateQueries("sightings"),
     // }
     );
+    const {user} = useUser();
 
     const router = useRouter();
     const [frame, runFrame] = useState(false);
@@ -288,18 +270,20 @@ function TestSet() {
     };
 
     const onTestCompletion = React.useCallback(() => {
-      mutation.mutate({
-        isNew: level[0],
-        numCorrect: level[1],
-        firstProbCorrect: level[2][0],
-        secondProbCorrect: level[2][1],
-        thirdProbCorrect: level[2][2],
-        fourthProbCorrect: level[2][3],
-        fifthProbCorrect: level[2][4],
-        sixthProbCorrect: level[2][5],
-        seventhProbCorrect: level[2][6]
-      })
-    }, [mutation]);
+      localStorage.setItem('level', JSON.stringify(level))
+      // mutation.mutate({
+      //   userEmail: user.email,
+      //   isNew: level[0],
+      //   numCorrect: level[1],
+      //   firstProbCorrect: level[2][0],
+      //   secondProbCorrect: level[2][1],
+      //   thirdProbCorrect: level[2][2],
+      //   fourthProbCorrect: level[2][3],
+      //   fifthProbCorrect: level[2][4],
+      //   sixthProbCorrect: level[2][5],
+      //   seventhProbCorrect: level[2][6]
+      // })
+    });
 
     return (
       <div className="container4">

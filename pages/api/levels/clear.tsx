@@ -6,10 +6,20 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     const prisma = new PrismaClient({log: ["query"]})
 
     try {
-
-        await prisma.user.deleteMany();
+        await prisma.level.deleteMany(
+        //     {
+        //     where: {
+        //         id: 133 // specify the ID of the user you want to delete
+        //     },
+        //     // enable cascade delete if needed
+        //     include: {
+                
+        //     }
+        // }
+        );
 
         res.status(200);
+    
     } catch(e) {
         console.error(e)
         res.status(500);

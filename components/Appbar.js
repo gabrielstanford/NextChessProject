@@ -11,19 +11,18 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import {ThemeProvider, createTheme} from '@mui/material'
 import AdbIcon from '@mui/icons-material/Adb';
-import {useRouter} from'next/router';
+import {useRouter} from 'next/router';
 import {useUser} from '@auth0/nextjs-auth0/client'
 
-const pages = ['About'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const pages = ['Dashboard'];
+const settings = ['Profile', 'Logout'];
 
 function Appbar() {
-
   const router = useRouter();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
   const {user, loginWithRedirect} = useUser();
 
   const handleOpenNavMenu = (event) => {
@@ -35,8 +34,8 @@ function Appbar() {
 
   const handleCloseNavMenu = (props) => {
     setAnchorElNav(null);
-    if(props==="About") {
-      router.push("/altWelcome")
+    if(props==="Dashboard") {
+      router.push("/dashboard")
     }
 
   };
@@ -46,15 +45,63 @@ function Appbar() {
     if(props==='Logout') {
       router.push("/api/auth/logout")
     }
-    if(props==='Dashboard') {
-      router.push("/dashboard")
+    if(props==='Profile') {
+      router.push('/dashboard/profile')
     }
+    
   };
 
+  const mdTheme = createTheme();
+
   return (
-    <AppBar color="success" position="static" className="appBar">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
+    <ThemeProvider theme={mdTheme}>
+<AppBar 
+        component="main"
+        sx={{
+            backgroundColor: (theme) =>
+              theme.palette.mode === 'light'
+                ? theme.palette.grey[100]
+                : theme.palette.grey[900],
+            // flexGrow: 1,
+            // height: '100vh',
+            // overflow: 'auto',
+          }}
+          position="static" 
+          className="appBar">
+  <Container maxWidth="xl" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+      {user && user.name ? <Avatar>{user.name.charAt(0)}</Avatar> : null}
+    </IconButton>
+    <Menu
+      sx={{ mt: '45px' }}
+      id="menu-appbar"
+      anchorEl={anchorElUser}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={Boolean(anchorElUser)}
+      onClose={handleCloseUserMenu}
+    >
+      {settings.map((setting) => (
+        <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
+          <Typography textAlign="center">{setting}</Typography>
+        </MenuItem>
+      ))}
+    </Menu>
+  </Container>
+</AppBar>
+</ThemeProvider>
+  );
+}
+export default Appbar;
+
+{/* <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
@@ -140,38 +187,4 @@ function Appbar() {
               </Button>
             ))}
           </Box>
-            {user ? <Box sx={{flexGrow: 0}}>
-            <Tooltip title="Open settings">
-    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-      <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-    </IconButton>
-  </Tooltip><Menu
-    sx={{ mt: '45px' }}
-    id="menu-appbar"
-    anchorEl={anchorElUser}
-    anchorOrigin={{
-      vertical: 'top',
-      horizontal: 'right',
-    }}
-    keepMounted
-    transformOrigin={{
-      vertical: 'top',
-      horizontal: 'right',
-    }}
-    open={Boolean(anchorElUser)}
-    onClose={handleCloseUserMenu}
-  >
-      {settings.map((setting) => (
-        <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
-          <Typography textAlign="center">{setting}</Typography>
-        </MenuItem>
-      ))}
-    </Menu>
-    </Box> : <Button variant="contained" onClick={() => router.push("/api/auth/login")}>Log In</Button>}
-          
-        </Toolbar>
-      </Container>
-    </AppBar>
-  );
-}
-export default Appbar;
+            {user ? <Box sx={{flexGrow: 0}}> */}
