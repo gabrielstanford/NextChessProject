@@ -1,4 +1,4 @@
-.container {
+/* .container {
   height: 100vh;
   background-color: #7b8b91;
 }
@@ -7,22 +7,20 @@
   display: flex;
   justify-content: space-between;
 }
-
-/* .imageCont {
+.imageCont {
   padding-right: 
-} */
-
+} 
 .centerCont {
   width: 30%;
   padding-left: 30px;
 }
 
-/* .centerItem {
+.centerItem {
   padding: 10px;
-} */
+}
 
 
-/* .container {
+.container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -61,5 +59,6 @@
     border-radius: 10px;
     text-transform: uppercase;
   } 
-
   */
+
+  

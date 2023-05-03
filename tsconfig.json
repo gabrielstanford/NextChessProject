@@ -22,7 +22,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "pages/api/auth/signup.js", "Dashboard/Chart.js", "Dashboard/Deposits.js", "Dashboard/Dashboard.js"  ],
+, "pages/api/auth/signup.js", "CentralDashboard/Chart.js", "CentralDashboard/Deposits.js", "CentralDashboard/CentralDashboard.js"  ],
   "exclude": [
     "node_modules"
   ]
