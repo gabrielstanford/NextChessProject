@@ -7,7 +7,7 @@ import Appbar from '../../components/Appbar'
 import { useQuery } from "react-query";
 import {useRouter} from 'next/router';
 import { useUser } from "@auth0/nextjs-auth0/client";
-import Dash from '../../Dashboard/Dashboard';
+import Dash from '../../CentralDashboard/CentralDashboard';
 import styles from '../../styles/dashboardhome.module.css';
 
 //next step: use localstorage to save test results before user creates account so that data is not lost on accidental reload

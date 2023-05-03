@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 const signupHandler = (req: NextApiRequest, res: NextApiResponse) =>
   handleLogin(req, res, {
-    returnTo: '/authorization',
+    returnTo: '/dashboard',
     authorizationParams: {
       screen_hint: 'signup',
     },

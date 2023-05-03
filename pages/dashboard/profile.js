@@ -1,5 +1,5 @@
 import {Typography} from '@mui/material'
-import Dash from '../../Dashboard/DashboardProfile';
+import Dash from '../../CentralDashboard/DashboardProfile';
 import Appbar from '../../Components/Appbar'
 import {useUser} from '@auth0/nextjs-auth0/client'
 import styles from '../../styles/profile.module.css'
@@ -18,7 +18,7 @@ function Profile() {
     <>
     <Typography color="black" variant="h2">Name: {user.name}</Typography>
     </>
-     : null}
+     :     null}
     </div>
     </>
     )   

@@ -10,15 +10,6 @@ function preventDefault(event) {
 
 export default function Deposits() {
 
-    let level = [];
-  if (typeof window !== 'undefined') {
-
-    if(localStorage.getItem('level') !== null ) {
-      console.log('test completed')
-      level = JSON.parse(localStorage.getItem('level'));
-    }
-  }
-
   return (
     <React.Fragment>
       <Title>Recent Deposits</Title>

@@ -22,9 +22,7 @@ const TestSet = dynamic(
 // const nextPageUrl = `/secondPage?newPlayer=${newPlayer}`;
 // router.push(nextPageUrl);
 
-//level[0] is self-assesment
-//level[1] is tactical abilities
-//level[1][0] is checkmates
+let level = [true, 0, [0, 0, 0, 0, 0, 0, 0]]
 //
 
 export function Test() {
@@ -38,6 +36,8 @@ export function Test() {
     if (s === "new") {
       // localStorage.setItem('newPlayer', true)
       // localStorage.setItem('newPlayer', true)
+      localStorage.clear();
+      localStorage.setItem('level', JSON.stringify(level))
       router.push({      
       pathname: '/dashboard',
       query: { newPlayer: 'true' },})
@@ -71,7 +71,7 @@ export function Test() {
             Are you new to chess?
           </Typography>
           <Typography
-            className="styles.sectionPart"
+            className="sectionPart"
             color="text.testFirstQuestion"
             variant="inherit"
           >

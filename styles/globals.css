@@ -2,34 +2,8 @@ body { margin: 0 }
 
 /*WelcomePage*/
 
-/*.Overlay {
-  background-color: #5a6af6;
-  position:fixed;
-  width:100%;
-  height:100%;
-  z-index:1000;
-}
-
-.Container {
-
-  display: flex;
-  justify-content: left;
-}
-
-.board2 {
-  padding-top: 10px;
-  padding-right: 50px;
-  width: 500px;
-  height: 500px;
-}
-
-.textButton {
-  width: 400px;
-  
-}/*
-
 /*Test*/
-/*.page {
+.page {
   background-color: #edf0f6;
   position:fixed;
   width:100%;
@@ -57,19 +31,6 @@ body { margin: 0 }
   flex-wrap: wrap;
   justify-content: center;
   padding: 5px;
-  
-}
-
-.welc {
-  display: flex;
-  justify-content: center;
-  padding-top: 20px;
-}
-
-.welcButton {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   
 }
 
@@ -145,4 +106,4 @@ padding-bottom: 20px;
   justify-content: center;
   padding-top: 100px;
 }
-*/
+
