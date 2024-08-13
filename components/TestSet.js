@@ -146,7 +146,7 @@ function TestSet() {
       if (puzzleStatus !== Tactics.length) {
         move = 1;
         for(let i = 1; i<Tactics.length; i++) {
-          console.log(i)
+
           if(puzzleStatus===i) {
             if(incorrectPuzzle===false) {
               level[2][i-1]=true;

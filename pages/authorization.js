@@ -23,8 +23,7 @@ async function createUserRequest(userData) {
    }
   }
   async function createLevelRequest(levelData) {
-    console.log('creating level')
-    console.log(JSON.stringify({level: levelData}))
+
     const settings = {
     method: "POST",
     headers: {
@@ -75,11 +74,11 @@ async function createUserRequest(userData) {
     const onNewUser = () => {
 
         if (typeof window !== 'undefined') {
-          console.log('not undefined')
+
           if(localStorage.getItem('level') !== null ) {
-            console.log('test completed')
+
             const level = JSON.parse(localStorage.getItem('level'));
-            console.log(level[1])
+   
             levMutation.mutate({
               userEmail: user.email,
               isNew: false,
@@ -92,14 +91,14 @@ async function createUserRequest(userData) {
               sixthProbCorrect: level[2][5],
               seventhProbCorrect: level[2][6],
             })
-            console.log('creating da user twice?')
+
             //split into two different functions
             // mutation.mutate({
             //   email: user.email,
             // })
           }
           else {
-            console.log('new')
+ 
             levMutation.mutate({
               userEmail: user.email,
               isNew: true,
@@ -118,8 +117,6 @@ async function createUserRequest(userData) {
         else {
           console.log('cannot get localstorage');
         }
-
-        console.log('has attempted user creation')
 
         if (oneRun) {
           oneRun=false;

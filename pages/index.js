@@ -8,22 +8,21 @@ import React from 'react'
 import { useQuery, useMutation, QueryClient } from "react-query";
 
 const LandingPage = () => {
-  console.log('hello')
   const router = useRouter();
   const {user, isLoading} = useUser();
 
-  console.log(JSON.stringify({
-    userEmail: "giggitygoo@gmail.com",
-    isNew: false,
-    numCorrect: 5,
-    firstProbCorrect: false,
-    secondProbCorrect: true,
-    thirdProbCorrect: false,
-    fourthProbCorrect: true,
-    fifthProbCorrect: false,
-    sixthProbCorrect: true,
-    seventhProbCorrect: false,
-  }))
+  // console.log(JSON.stringify({
+  //   userEmail: "giggitygoo@gmail.com",
+  //   isNew: false,
+  //   numCorrect: 5,
+  //   firstProbCorrect: false,
+  //   secondProbCorrect: true,
+  //   thirdProbCorrect: false,
+  //   fourthProbCorrect: true,
+  //   fifthProbCorrect: false,
+  //   sixthProbCorrect: true,
+  //   seventhProbCorrect: false,
+  // }))
   if(user) {
     router.push("/dashboard");
   }
